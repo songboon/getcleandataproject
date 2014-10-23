@@ -86,7 +86,7 @@ for (i in 1:length(selectedFeatures$featureLabel)) {
 
 # Remove columns ID and activityType they are used as reference keys
 # otherwise aggregate function will cause warnings
-columnstodrop = drops <- c("ID","activityType")
+columnstodrop = c("ID","activityType")
 newtidyData = meanstddevData[,!(names(meanstddevData) %in% columnstodrop)]
 
 # clean up memory
@@ -95,16 +95,15 @@ rm(meanstddevData, features)
 # Compute the mean for each subject ID and each activity ID
 newtidyData = aggregate(newtidyData, by=list(subject=newtidyData$subjectId, activity=newtidyData$activityId), FUN=mean, na.rm=TRUE)
 
-# Remove columns subject and activity as they are redundant data created by the aggregate function above
-columnstodrop <- c("subject","activity")
-newtidyData <- newtidyData[,!(names(newtidyData) %in% columnstodrop)]
-
 # Put back the activity type string
-newtidyData = merge(newtidyData, activityLabels)
+newtidyData = merge(activityLabels, newtidyData)
+
+# Remove columns subject and activity as they are redundant data created by the aggregate function above
+columnstodrop = c("subject","activity", "activityId")
+newtidyData = newtidyData[,!(names(newtidyData) %in% columnstodrop)]
 
 # output the final result to csv file format in current working directory
 if(file.exists("newtidyData.csv")) {
   file.remove("newtidyData.csv")
 }
-#write.csv(x=newtidyData, file="newtidyData.csv")
 write.csv(newtidyData, "newtidyData.csv")
