@@ -102,8 +102,13 @@ newtidyData = merge(activityLabels, newtidyData)
 columnstodrop = c("subject","activity", "activityId")
 newtidyData = newtidyData[,!(names(newtidyData) %in% columnstodrop)]
 
-# output the final result to csv file format in current working directory
+# output the final result to csv and text file format in current working directory
 if(file.exists("newtidyData.csv")) {
   file.remove("newtidyData.csv")
 }
 write.csv(newtidyData, "newtidyData.csv")
+
+if(file.exists("newtidyData.txt")) {
+  file.remove("newtidyData.txt")
+}
+write.table(newtidyData, "newtidyData.txt", row.names=FALSE)
